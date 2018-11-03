@@ -26,8 +26,8 @@ public class SyncEventBus implements EventBus {
   public void dispatch(final Event<?> event) {
     subscribers
       .stream()
-      .filter(subscriber -> subscriber.supports().contains(event.getData().getClass()))
-      .forEach(subscriber -> subscriber.handleChange(event));
+        .filter(subscriber -> subscriber.supports().contains(event.getClass()))
+        .forEach(subscriber -> subscriber.handle(event));
   }
 
   @Override
