@@ -24,8 +24,7 @@ public class SyncEventBus implements EventBus {
 
   @Override
   public void dispatch(final Event<?> event) {
-    subscribers
-      .stream()
+    subscribers.stream()
         .filter(subscriber -> subscriber.supports().contains(event.getClass()))
         .forEach(subscriber -> subscriber.handle(event));
   }
