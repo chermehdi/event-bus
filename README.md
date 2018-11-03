@@ -24,7 +24,7 @@ eventBus.register(subs);
 // later on on the code ... 
 eventBus.dispatch(new EventStub());
 ```  
-##### Using The idea of Guave's EventBus
+##### Using The idea of Guava's EventBus
 
 ```java
 EventBus eventBus = new EventBus("myEventBus")
