@@ -28,15 +28,17 @@ eventBus.dispatch(new EventStub());
 
 ```java
 EventBus eventBus = new EventBus("myEventBusName")
+Handler handler = new Handler();
 
-eventBus.register(new Handler());
+eventBus.register(handler);
 
 class Event {
   // your event
 }
 class Handler {
-  
+
   @Subscribe("myEventBusName")
+  @Subscribe("multiEventSubscribingIsSupported")
   public void handleEvent(Event event) {
     // consume the event as you like
   }
@@ -44,6 +46,9 @@ class Handler {
 
 // later on in the code
 eventBus.post(new Event());
+
+// can also unregister handlers later on
+eventBus.register(handler);
 ```
 
 ### Contribution
