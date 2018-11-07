@@ -21,14 +21,6 @@ public final class Invocation {
     this.targetObject = targetObject;
   }
 
-  public Method getHandler() {
-    return handler;
-  }
-
-  public Object getTargetObject() {
-    return targetObject;
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {
