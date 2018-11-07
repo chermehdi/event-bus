@@ -1,11 +1,9 @@
 package io.github.chermehdi.guavabus;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Collectors;
 
 /**
@@ -16,7 +14,7 @@ import java.util.stream.Collectors;
  */
 public class EventBus {
 
-  private Map<Class<?>, List<Invocation>> invocations;
+  private Map<Class<?>, Set<Invocation>> invocations;
 
   private String name;
 
@@ -45,9 +43,32 @@ public class EventBus {
         if (invocations.containsKey(type)) {
           invocations.get(type).add(new Invocation(method, object));
         } else {
-          List<Invocation> temp = new Vector<>();
+          Set<Invocation> temp = new HashSet<>();
           temp.add(new Invocation(method, object));
           invocations.put(type, temp);
+        }
+      }
+      currentClass = currentClass.getSuperclass();
+    }
+  }
+
+  public void unregister(Object object) {
+    Class<?> currentClass = object.getClass();
+    // we try to navigate the object tree back to object ot see if
+    // there is any annotated @Subscribe classes
+    while (currentClass != null) {
+      List<Method> subscribeMethods = findSubscriptionMethods(currentClass);
+
+      for (Method method : subscribeMethods) {
+        // we know for sure that it has only one parameter
+        Class<?> type = method.getParameterTypes()[0];
+        if (invocations.containsKey(type)) {
+          Set<Invocation> invocationsSet = invocations.get(type);
+          invocationsSet.remove(new Invocation(method, object));
+
+          if(invocationsSet.isEmpty()) {
+            invocations.remove(type);
+          }
         }
       }
       currentClass = currentClass.getSuperclass();
@@ -76,7 +97,7 @@ public class EventBus {
     return Arrays.stream(subscribes).anyMatch(subscribe -> this.name.equals(subscribe.value()));
   }
 
-  public Map<Class<?>, List<Invocation>> getInvocations() {
+  public Map<Class<?>, Set<Invocation>> getInvocations() {
     return invocations;
   }
 

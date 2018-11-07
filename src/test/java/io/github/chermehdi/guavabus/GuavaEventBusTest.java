@@ -1,5 +1,6 @@
 package io.github.chermehdi.guavabus;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
@@ -74,6 +75,26 @@ class GuavaEventBusTest {
     assertTrue(bus.getInvocations().containsKey(StubObject.class));
     assertTrue(bus.getInvocations().containsKey(EventObject.class));
     assertTrue(anotherBus.getInvocations().containsKey(EventObject.class));
+  }
+
+  @Test
+  void unregister() {
+    bus.unregister(mockedHandler);
+    anotherBus.unregister(mockedHandler);
+
+    anotherBus.post(new EventObject("some event"));
+    bus.post(new EventObject("some event"));
+
+    anotherBus.post(new StubObject("some stub"));
+    bus.post(new StubObject("some stub"));
+
+    verify(mockedHandler, times(0)).handlStub(any());
+    verify(mockedHandler, times(0)).handleEvent(any());
+    verify(mockedHandler, times(0)).doesNothing(any());
+    verify(mockedHandler, times(0)).doesNothingWrongEvent(any());
+
+    assertTrue(bus.getInvocations().isEmpty());
+    assertTrue(anotherBus.getInvocations().isEmpty());
   }
 
   class StubObject {
