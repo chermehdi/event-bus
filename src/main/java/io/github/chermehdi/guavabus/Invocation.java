@@ -5,8 +5,8 @@ import java.lang.reflect.Method;
 import java.util.Objects;
 
 /**
- * wrapper class holding a pair of method and a target object, the only purpose is storing them as
- * invocable values to be used inside the EventBus
+ * Wrapper class holding the method to invoke and the target object,
+ * serving as invocable values to be user inside the EventBus
  *
  * @author chermehdi
  */

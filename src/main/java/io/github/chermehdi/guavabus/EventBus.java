@@ -7,8 +7,8 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Collectors;
 
 /**
- * Simple implementation demonstrating how a guava EventBus works generally, without all the noise
- * of special cases handling, and special guava collections
+ * Simple implementation demonstrating generally how guava-like EventBus works, without all the
+ * additional code of special cases handling and the usage of special guava collections
  *
  * @author chermehdi
  */
@@ -32,8 +32,11 @@ public class EventBus {
 
   public void register(Object object) {
     Class<?> currentClass = object.getClass();
-    // we try to navigate the object tree back to object ot see if
-    // there is any annotated @Subscribe classes
+
+    /**
+     * try to navigate the object tree back to {@link Object} class while
+     * checking if there is any @{@link Subscribe} annotated methods
+     */
     while (currentClass != null) {
       List<Method> subscribeMethods = findSubscriptionMethods(currentClass);
 
@@ -54,13 +57,10 @@ public class EventBus {
 
   public void unregister(Object object) {
     Class<?> currentClass = object.getClass();
-    // we try to navigate the object tree back to object ot see if
-    // there is any annotated @Subscribe classes
     while (currentClass != null) {
       List<Method> subscribeMethods = findSubscriptionMethods(currentClass);
 
       for (Method method : subscribeMethods) {
-        // we know for sure that it has only one parameter
         Class<?> type = method.getParameterTypes()[0];
         if (invocations.containsKey(type)) {
           Set<Invocation> invocationsSet = invocations.get(type);

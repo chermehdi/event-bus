@@ -3,6 +3,9 @@ package io.github.chermehdi.guavabus;
 import java.lang.annotation.*;
 
 /**
+ * Annotation to annotate methode which we wants to be invocable
+ * by the EventBus identified by its value
+ *
  * @author chermehdi
  */
 @Repeatable(Subscribe.List.class)
