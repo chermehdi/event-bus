@@ -27,7 +27,7 @@ eventBus.dispatch(new EventStub());
 ##### Using The idea of Guava's EventBus
 
 ```java
-EventBus eventBus = new EventBus("myEventBus")
+EventBus eventBus = new EventBus("myEventBusName")
 
 eventBus.register(new Handler());
 
@@ -36,7 +36,7 @@ class Event {
 }
 class Handler {
   
-  @Subscribe
+  @Subscribe("myEventBusName")
   public void handleEvent(Event event) {
     // consume the event as you like
   }
