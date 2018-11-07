@@ -5,6 +5,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -12,29 +13,67 @@ import org.mockito.Mockito;
  * @author chermehdi
  */
 class GuavaEventBusTest {
+  private EventBus bus;
+  private EventBus anotherBus;
+  private HandlerClass mockedHandler;
+
+  @BeforeEach
+  void initBus() {
+    bus = new EventBus("GuavaEventBus");
+    anotherBus = new EventBus("AnotherGuavaEventBus");
+
+    mockedHandler = Mockito.mock(HandlerClass.class);
+    bus.register(mockedHandler);
+    anotherBus.register(mockedHandler);
+  }
 
   @Test
-  void post() {
-    EventBus bus = new EventBus("GuavaEventBus");
-    HandlerClass mockedHandler = Mockito.mock(HandlerClass.class);
-    bus.register(mockedHandler);
+  void postEventObjectSingleBus() {
     bus.post(new EventObject("some event"));
     bus.post(new EventObject("some event"));
-    verify(mockedHandler, times(2)).handleEvent(any());
     verify(mockedHandler, times(0)).handlStub(any());
-    bus.post(new StubObject("some stub"));
-    verify(mockedHandler, times(1)).handlStub(any());
     verify(mockedHandler, times(2)).handleEvent(any());
     verify(mockedHandler, times(0)).doesNothing(any());
     verify(mockedHandler, times(0)).doesNothingWrongEvent(any());
   }
 
   @Test
+  void postStubObjectSingleBus() {
+    bus.post(new StubObject("some stub"));
+    bus.post(new StubObject("some stub"));
+    verify(mockedHandler, times(2)).handlStub(any());
+    verify(mockedHandler, times(0)).handleEvent(any());
+    verify(mockedHandler, times(0)).doesNothing(any());
+    verify(mockedHandler, times(0)).doesNothingWrongEvent(any());
+  }
+
+  @Test
+  void postEventObjectMultiBus() {
+    anotherBus.post(new EventObject("some event"));
+    bus.post(new EventObject("some event"));
+
+    verify(mockedHandler, times(0)).handlStub(any());
+    verify(mockedHandler, times(2)).handleEvent(any());
+    verify(mockedHandler, times(0)).doesNothing(any());
+    verify(mockedHandler, times(0)).doesNothingWrongEvent(any());
+  }
+
+  @Test
+  void postEventObjectMultiBusWrongArg() {
+    anotherBus.post("A wrong event argument");
+    bus.post("A wrong event argument");
+
+    verify(mockedHandler, times(0)).handlStub(any());
+    verify(mockedHandler, times(0)).handleEvent(any());
+    verify(mockedHandler, times(0)).doesNothing(any());
+    verify(mockedHandler, times(0)).doesNothingWrongEvent(any());
+  }
+
+  @Test
   void register() {
-    EventBus bus = new EventBus("GuavaEventBus");
-    HandlerClass mockedHandler = Mockito.mock(HandlerClass.class);
-    bus.register(mockedHandler);
     assertTrue(bus.getInvocations().containsKey(StubObject.class));
+    assertTrue(bus.getInvocations().containsKey(EventObject.class));
+    assertTrue(anotherBus.getInvocations().containsKey(EventObject.class));
   }
 
   class StubObject {
@@ -71,6 +110,7 @@ class GuavaEventBusTest {
     }
 
     @Subscribe("GuavaEventBus")
+    @Subscribe("AnotherGuavaEventBus")
     public void handleEvent(EventObject event) {
       System.out.println("i got event object " + event);
     }

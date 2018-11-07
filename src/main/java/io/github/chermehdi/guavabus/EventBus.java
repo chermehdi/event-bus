@@ -38,6 +38,7 @@ public class EventBus {
     // there is any annotated @Subscribe classes
     while (currentClass != null) {
       List<Method> subscribeMethods = findSubscriptionMethods(currentClass);
+
       for (Method method : subscribeMethods) {
         // we know for sure that it has only one parameter
         Class<?> type = method.getParameterTypes()[0];
@@ -55,7 +56,7 @@ public class EventBus {
 
   private List<Method> findSubscriptionMethods(Class<?> type) {
     List<Method> subscribeMethods = Arrays.stream(type.getDeclaredMethods())
-        .filter(method -> method.isAnnotationPresent(Subscribe.class) && this.name.equals(method.getAnnotation(Subscribe.class).value()))
+        .filter(this::isSubscribed)
         .collect(Collectors.toList());
     checkSubscriberMethods(subscribeMethods);
     return subscribeMethods;
@@ -68,6 +69,11 @@ public class EventBus {
       throw new IllegalArgumentException(
           "Method annotated with @Susbscribe has more than one parameter");
     }
+  }
+
+  private boolean isSubscribed(Method method) {
+    Subscribe[] subscribes = method.getAnnotationsByType(Subscribe.class);
+    return Arrays.stream(subscribes).anyMatch(subscribe -> this.name.equals(subscribe.value()));
   }
 
   public Map<Class<?>, List<Invocation>> getInvocations() {
