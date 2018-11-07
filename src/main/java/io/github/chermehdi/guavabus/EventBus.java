@@ -55,7 +55,7 @@ public class EventBus {
 
   private List<Method> findSubscriptionMethods(Class<?> type) {
     List<Method> subscribeMethods = Arrays.stream(type.getDeclaredMethods())
-        .filter(method -> method.isAnnotationPresent(Subscribe.class))
+        .filter(method -> method.isAnnotationPresent(Subscribe.class) && this.name.equals(method.getAnnotation(Subscribe.class).value()))
         .collect(Collectors.toList());
     checkSubscriberMethods(subscribeMethods);
     return subscribeMethods;

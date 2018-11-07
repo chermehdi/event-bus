@@ -26,6 +26,7 @@ class GuavaEventBusTest {
     verify(mockedHandler, times(1)).handlStub(any());
     verify(mockedHandler, times(2)).handleEvent(any());
     verify(mockedHandler, times(0)).doesNothing(any());
+    verify(mockedHandler, times(0)).doesNothingWrongEvent(any());
   }
 
   @Test
@@ -64,18 +65,23 @@ class GuavaEventBusTest {
 
   class HandlerClass {
 
-    @Subscribe
+    @Subscribe("GuavaEventBus")
     public void handlStub(StubObject stub) {
       System.out.println("i got stub object " + stub);
     }
 
-    @Subscribe
+    @Subscribe("GuavaEventBus")
     public void handleEvent(EventObject event) {
       System.out.println("i got event object " + event);
     }
 
     public void doesNothing(EventObject object) {
       System.out.println("does nothing never gets called !");
+    }
+
+    @Subscribe("WrongGuavaEventBus")
+    public void doesNothingWrongEvent(EventObject object) {
+      System.out.println("does nothing never gets called because it subscribed to the wrong event !");
     }
   }
 }
