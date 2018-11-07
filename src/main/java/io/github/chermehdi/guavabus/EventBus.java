@@ -1,7 +1,11 @@
 package io.github.chermehdi.guavabus;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -65,7 +69,7 @@ public class EventBus {
           Set<Invocation> invocationsSet = invocations.get(type);
           invocationsSet.remove(new Invocation(method, object));
 
-          if(invocationsSet.isEmpty()) {
+          if (invocationsSet.isEmpty()) {
             invocations.remove(type);
           }
         }
@@ -82,7 +86,8 @@ public class EventBus {
   }
 
   private List<Method> filterSingleParameterMethods(List<Method> subscribeMethods) {
-    return subscribeMethods.stream().filter(method -> method.getParameterCount() == 1).collect(Collectors.toList());
+    return subscribeMethods.stream().filter(method -> method.getParameterCount() == 1)
+        .collect(Collectors.toList());
   }
 
   private boolean isSubscribed(Method method) {

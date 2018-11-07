@@ -6,7 +6,7 @@ import java.util.Objects;
 
 /**
  * Wrapper class holding the method to invoke and the target object,
- * serving as invocable values to be user inside the EventBus
+ * serving as invokable values to be user inside the EventBus
  *
  * @author chermehdi
  */

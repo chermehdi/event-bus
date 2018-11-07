@@ -13,8 +13,11 @@ import org.mockito.Mockito;
  * @author chermehdi
  */
 class GuavaEventBusTest {
+
   private EventBus bus;
+
   private EventBus anotherBus;
+
   private HandlerClass mockedHandler;
 
   @BeforeEach
@@ -29,6 +32,10 @@ class GuavaEventBusTest {
 
   @Test
   void postEventObjectSingleBus() {
+    verifyCallsOnBus(bus);
+  }
+
+  private void verifyCallsOnBus(EventBus bus) {
     bus.post(new EventObject("some event"));
     bus.post(new EventObject("some event"));
     verify(mockedHandler, times(0)).handlStub(any());
@@ -51,14 +58,7 @@ class GuavaEventBusTest {
 
   @Test
   void postEventObjectMultiBus() {
-    anotherBus.post(new EventObject("some event"));
-    bus.post(new EventObject("some event"));
-
-    verify(mockedHandler, times(0)).handlStub(any());
-    verify(mockedHandler, times(2)).handleEvent(any());
-    verify(mockedHandler, times(0)).doesNothing(any());
-    verify(mockedHandler, times(0)).doesNothingWrongEvent(any());
-    verify(mockedHandler, times(0)).doesNothingZeroParameter();
+    verifyCallsOnBus(anotherBus);
   }
 
   @Test
@@ -146,7 +146,8 @@ class GuavaEventBusTest {
 
     @Subscribe("WrongGuavaEventBus")
     public void doesNothingWrongEvent(EventObject object) {
-      System.out.println("does nothing never gets called because it subscribed to the wrong event !");
+      System.out
+          .println("does nothing never gets called because it subscribed to the wrong event !");
     }
 
     @Subscribe("GuavaEventBus")
