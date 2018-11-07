@@ -79,17 +79,11 @@ public class EventBus {
     List<Method> subscribeMethods = Arrays.stream(type.getDeclaredMethods())
         .filter(this::isSubscribed)
         .collect(Collectors.toList());
-    checkSubscriberMethods(subscribeMethods);
-    return subscribeMethods;
+    return filterSingleParameterMethods(subscribeMethods);
   }
 
-  private void checkSubscriberMethods(List<Method> subscribeMethods) {
-    boolean hasMoreThanOneParameter = subscribeMethods.stream()
-        .anyMatch(method -> method.getParameterCount() != 1);
-    if (hasMoreThanOneParameter) {
-      throw new IllegalArgumentException(
-          "Method annotated with @Susbscribe has more than one parameter");
-    }
+  private List<Method> filterSingleParameterMethods(List<Method> subscribeMethods) {
+    return subscribeMethods.stream().filter(method -> method.getParameterCount() == 1).collect(Collectors.toList());
   }
 
   private boolean isSubscribed(Method method) {

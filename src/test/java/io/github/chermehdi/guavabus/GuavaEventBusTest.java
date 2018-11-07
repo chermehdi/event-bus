@@ -36,6 +36,7 @@ class GuavaEventBusTest {
     verify(mockedHandler, times(2)).handleEvent(any());
     verify(mockedHandler, times(0)).doesNothing(any());
     verify(mockedHandler, times(0)).doesNothingWrongEvent(any());
+    verify(mockedHandler, times(0)).doesNothingZeroParameter();
   }
 
   @Test
@@ -46,6 +47,7 @@ class GuavaEventBusTest {
     verify(mockedHandler, times(0)).handleEvent(any());
     verify(mockedHandler, times(0)).doesNothing(any());
     verify(mockedHandler, times(0)).doesNothingWrongEvent(any());
+    verify(mockedHandler, times(0)).doesNothingZeroParameter();
   }
 
   @Test
@@ -57,6 +59,7 @@ class GuavaEventBusTest {
     verify(mockedHandler, times(2)).handleEvent(any());
     verify(mockedHandler, times(0)).doesNothing(any());
     verify(mockedHandler, times(0)).doesNothingWrongEvent(any());
+    verify(mockedHandler, times(0)).doesNothingZeroParameter();
   }
 
   @Test
@@ -68,6 +71,7 @@ class GuavaEventBusTest {
     verify(mockedHandler, times(0)).handleEvent(any());
     verify(mockedHandler, times(0)).doesNothing(any());
     verify(mockedHandler, times(0)).doesNothingWrongEvent(any());
+    verify(mockedHandler, times(0)).doesNothingZeroParameter();
   }
 
   @Test
@@ -92,6 +96,7 @@ class GuavaEventBusTest {
     verify(mockedHandler, times(0)).handleEvent(any());
     verify(mockedHandler, times(0)).doesNothing(any());
     verify(mockedHandler, times(0)).doesNothingWrongEvent(any());
+    verify(mockedHandler, times(0)).doesNothingZeroParameter();
 
     assertTrue(bus.getInvocations().isEmpty());
     assertTrue(anotherBus.getInvocations().isEmpty());
@@ -143,6 +148,12 @@ class GuavaEventBusTest {
     @Subscribe("WrongGuavaEventBus")
     public void doesNothingWrongEvent(EventObject object) {
       System.out.println("does nothing never gets called because it subscribed to the wrong event !");
+    }
+
+    @Subscribe("GuavaEventBus")
+    @Subscribe("AnotherGuavaEventBus")
+    public void doesNothingZeroParameter() {
+      System.out.println("this method will be ignored !");
     }
   }
 }
