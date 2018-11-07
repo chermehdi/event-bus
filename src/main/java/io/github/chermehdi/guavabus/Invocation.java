@@ -5,8 +5,8 @@ import java.lang.reflect.Method;
 import java.util.Objects;
 
 /**
- * wrapper class holding a pair of method and a target object, the only purpose is storing them as
- * invocable values to be used inside the EventBus
+ * Wrapper class holding the method to invoke and the target object,
+ * serving as invokable values to be user inside the EventBus
  *
  * @author chermehdi
  */
@@ -19,14 +19,6 @@ public final class Invocation {
   public Invocation(Method handler, Object targetObject) {
     this.handler = handler;
     this.targetObject = targetObject;
-  }
-
-  public Method getHandler() {
-    return handler;
-  }
-
-  public Object getTargetObject() {
-    return targetObject;
   }
 
   @Override
